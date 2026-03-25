@@ -1,0 +1,85 @@
+name: Deploy API
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      DEPLOY_USER: ${{ secrets.DEPLOY_USER }}   # roottest
+      DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+      API_DIR:     ${{ secrets.API_DIR }}       # /home/webapps/apps/alertix_api
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup SSH agent (runner → server)
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.DEPLOY_KEY }}
+
+      - name: Validate env
+        run: |
+          [ -n "$DEPLOY_USER" ] || exit 1
+          [ -n "$DEPLOY_HOST" ] || exit 1
+          [ -n "$API_DIR" ]     || exit 1
+
+      - name: Add server to known_hosts
+        run: ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts
+
+      - name: Deploy to server
+        run: |
+          ssh "$DEPLOY_USER@$DEPLOY_HOST" bash -s <<'EOF'
+            set -e
+
+            APP_USER=webapps
+            APP_DIR="/home/webapps/apps/alertix_api"
+            REPO_SSH="git@github.com:osmanceyhan/alertix_api.git"
+
+            # root: dizin & ownership
+            mkdir -p /home/webapps/apps
+            chown -R webapps:webapps /home/webapps
+
+            # webapps: git / node / build
+            sudo -u "$APP_USER" bash -c '
+              set -e
+              cd /home/webapps/apps
+
+              mkdir -p ~/.ssh
+              ssh-keyscan -H github.com >> ~/.ssh/known_hosts 2>/dev/null || true
+
+              if [ ! -d alertix_api/.git ]; then
+                git clone "'"$REPO_SSH"'" alertix_api
+              else
+                cd alertix_api
+                git fetch origin
+                git reset --hard origin/main
+                cd ..
+              fi
+
+              cd alertix_api
+
+              [ -s ~/.nvm/nvm.sh ] && . ~/.nvm/nvm.sh
+
+              command -v pm2  >/dev/null 2>&1 || npm i -g pm2
+              command -v pnpm >/dev/null 2>&1 || npm i -g pnpm
+
+              if [ -f pnpm-lock.yaml ]; then
+                pnpm i --frozen-lockfile || pnpm i
+              else
+                npm ci || npm i
+              fi
+
+              npm run build
+            '
+
+            sudo -u webapps pm2 reload alertix_api \
+              || sudo -u webapps pm2 start /home/webapps/apps/ecosystem.config.js --only alertix_api
+
+            sudo -u webapps pm2 save
+          EOF
