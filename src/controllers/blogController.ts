@@ -164,7 +164,7 @@ export const updateBlog = async (req: Request, res: Response): Promise<void> => 
 
     // Check slug uniqueness if slug is being changed
     if (updates.slug && updates.slug !== existing.slug) {
-      const slugExists = await Blog.findOne({ slug: updates.slug, _id: { $ne: new mongoose.Types.ObjectId(req.params.id) } });
+      const slugExists = await Blog.findOne({ slug: updates.slug, _id: { $ne: new mongoose.Types.ObjectId(req.params.id as string) } });
       if (slugExists) {
         res.status(400).json({ error: "Bu slug zaten kullanılıyor" });
         return;
