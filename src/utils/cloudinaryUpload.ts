@@ -2,7 +2,7 @@ import cloudinary from "../config/cloudinary";
 
 export const uploadToCloudinary = (
   buffer: Buffer,
-  folder: string = "assetix"
+  folder: string = "alertix"
 ): Promise<string> => {
   return new Promise((resolve, reject) => {
     cloudinary.uploader

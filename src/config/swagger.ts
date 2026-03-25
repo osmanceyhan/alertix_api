@@ -4,7 +4,7 @@ const options: swaggerJsdoc.Options = {
   definition: {
     openapi: "3.0.0",
     info: {
-      title: "Assetix (Alertix) API",
+      title: "Alertix API",
       version: "1.0.0",
       description: "Flash deals notification platform API",
     },

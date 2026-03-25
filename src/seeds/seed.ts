@@ -227,7 +227,7 @@ const seed = async () => {
     const existingAdmin = await Admin.findOne({ email: process.env.ADMIN_EMAIL });
     if (!existingAdmin) {
       await Admin.create({
-        email: process.env.ADMIN_EMAIL || "admin@assetix.com",
+        email: process.env.ADMIN_EMAIL || "admin@alertix.com",
         password: process.env.ADMIN_PASSWORD || "123456",
       });
       console.log("Admin kullanıcısı oluşturuldu");

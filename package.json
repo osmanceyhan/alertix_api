@@ -1,5 +1,5 @@
 {
-  "name": "assetix_api",
+  "name": "alertix_api",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -12,16 +12,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/osmanceyhan/assetix_api.git"
+    "url": "git+https://github.com/osmanceyhan/alertix_api.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "bugs": {
-    "url": "https://github.com/osmanceyhan/assetix_api/issues"
+    "url": "https://github.com/osmanceyhan/alertix_api/issues"
   },
-  "homepage": "https://github.com/osmanceyhan/assetix_api#readme",
+  "homepage": "https://github.com/osmanceyhan/alertix_api#readme",
   "dependencies": {
     "bcryptjs": "^3.0.3",
     "cloudinary": "^2.9.0",

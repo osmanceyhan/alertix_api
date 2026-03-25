@@ -117,7 +117,7 @@ export const createDeal = async (req: Request, res: Response): Promise<void> => 
 
     let imageUrl = req.body.imageUrl || "";
     if (req.file) {
-      imageUrl = await uploadToCloudinary(req.file.buffer, "assetix/deals");
+      imageUrl = await uploadToCloudinary(req.file.buffer, "alertix/deals");
     }
 
     // İlk fiyat kaydı
@@ -158,7 +158,7 @@ export const updateDeal = async (req: Request, res: Response): Promise<void> => 
     const updates = { ...req.body };
 
     if (req.file) {
-      updates.imageUrl = await uploadToCloudinary(req.file.buffer, "assetix/deals");
+      updates.imageUrl = await uploadToCloudinary(req.file.buffer, "alertix/deals");
     }
 
     if (updates.originalPrice && updates.discountedPrice) {
