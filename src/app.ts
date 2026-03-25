@@ -16,7 +16,12 @@ import blogRoutes from "./routes/blog";
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: process.env.NODE_ENV === "production"
+    ? ["https://alertix.co", "https://www.alertix.co"]
+    : true,
+  credentials: true,
+}));
 app.use(helmet());
 app.use(morgan("dev"));
 app.use(express.json());
