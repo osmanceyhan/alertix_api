@@ -15,21 +15,16 @@ import blogRoutes from "./routes/blog";
 
 const app = express();
 
-// CORS - handle preflight
-app.options("*", cors({
-  origin: ["https://alertix.co", "https://www.alertix.co"],
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-}));
-app.use(cors({
+// CORS
+const corsOptions = {
   origin: process.env.NODE_ENV === "production"
     ? ["https://alertix.co", "https://www.alertix.co"]
     : true,
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
-}));
+};
+app.use(cors(corsOptions));
 app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" },
 }));
